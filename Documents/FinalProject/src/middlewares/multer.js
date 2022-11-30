@@ -1,6 +1,6 @@
-import multter from './multter';
+import multer from "multer"
 
-const storage = multter.diskStorage({
+const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, '/uploads')
   },
@@ -20,7 +20,7 @@ const storage = multter.diskStorage({
             }
         }
 
-        const upload = multter({
+        const upload = multer({
             storage: storage,
             limits: {fileSize: 1024 * 1024},
             fileFilter: fileFilter

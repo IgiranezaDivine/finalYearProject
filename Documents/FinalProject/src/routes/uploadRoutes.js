@@ -1,18 +1,12 @@
 import  express  from 'express';
-import bodyParser from 'body-parser';
-import upload from './multer';
-import Cloudinary from './cloudinary';
-import fs from './fs';
-const app = express();
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
-app.use(bodyParser.json())
+import upload from '../middlewares/multer.js';
+import Cloudinary from '../utils/cloudinary.js';
+const app = express.Router();
 
-app.use('/upload-images', upload.array('image'), async(req,res) => {
+app.post('/upload-images', upload.single('image'), async(req,res) => {
     const uploader = async (path) => await Cloudinary.uploads(path, 'Images');
 
-
+console.log(req)
 if(req.method === 'POST'){
     const urls =[]
     const files = req.files;
@@ -22,7 +16,7 @@ if(req.method === 'POST'){
         urls.push(newPath)
         files.unlinkSync(path)
     }
-    res.status(200).json({
+    res.status(201).json({
         message: 'images uploaded successfully',
         data: urls
     })
