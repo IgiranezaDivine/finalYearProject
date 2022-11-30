@@ -7,10 +7,15 @@ const Register = async (req, res) => {
     name: req.body.name,
     username: req.body.username,
     age: req.body.age,
+    lastSeen: req.body.lastSeen,
+    details: req.body.details,
+    policeStation: req.body.policeStation,
+
+    names: req.body.names
   });
   if (error) return res.status(400).json(error.details[0].message);
   try {
-    const { name, email, password, role } = req.body;
+    const { name, username, password, role } = req.body;
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
     const salt = await bcrypt.genSalt(10);
