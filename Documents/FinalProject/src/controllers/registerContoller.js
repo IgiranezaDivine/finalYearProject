@@ -11,23 +11,28 @@ const Register = async (req, res) => {
     details: req.body.details,
     policeStation: req.body.policeStation,
 
-    names: req.body.names
+    names: req.body.names,
+    othername: req.body.othername,
+    role: req.body.role
   });
   if (error) return res.status(400).json(error.details[0].message);
   try {
-    const { name, username, password, role } = req.body;
+    const { name, username, age,  lastSeen, details, policeStation, names, othername} = req.body;
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: 'User already exists' });
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
       name,
-      email,
-      password: hashPassword,
-      role: role,
+      username,
+      age,
+      lastSeen,
+      details,
+      policeStation,
+      names,
+      othername,
     });
     const savedUser = await newUser.save();
-    savedUser.password = undefined;
     res
       .status(201)
       .json({ message: 'user saved successfull', user: savedUser });
@@ -61,7 +66,13 @@ const updateUser = async (req, res) => {
       id,
       {
         name: req.body.name || user.name,
-        role: req.body.role || user.role,
+        username: req.body.username || user.username,
+        age: req.body.age || user.age,
+        lastSeen: req.body.lastSeen || user.lastSeen,
+        details: req.body.details || user.details,
+        policeStation: req.body.policeStation || user.policeStation,
+        names: req.body.names || user.names,
+        othername: req.body.othername || user.othername,
       },
       { new: true }
     );
@@ -75,7 +86,7 @@ const updateUser = async (req, res) => {
 const getSingleUser = async (req, res) => {
   const id = req.user.id;
   try {
-    const user = await User.findById(id).populate('role').exec();
+    const user = await User.findById(id).populate('name').exec();
     if (!user) res.status(404).json({ message: 'user not found' });
     res.status(200).json({ user: user });
   } catch (error) {}
