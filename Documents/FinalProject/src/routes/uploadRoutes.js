@@ -10,6 +10,7 @@ app.post(
     try {
       const result = await Cloudinary(req);
       console.log(result);
+      
 
       res.status(200).json({
         message: 'image uploaded successfully',

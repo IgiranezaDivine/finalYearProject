@@ -17,7 +17,7 @@ const upload = async (req, res) => {
     let imgur;
     await cloudinary.v2.uploader.upload(req.file.path, async (err, result) => {
       if (err)
-        res.status(500).json({
+        res.status(400).json({
           message: err.message,
         });
       return (imgur = result.secure_url);

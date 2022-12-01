@@ -1,8 +1,10 @@
-import User from '../models/User.js';
-import UserValidation from '../validation/userValidation.js';
+import User from '../models/Register.js';
+import UserValidation from '../validation/registerValidation.js';
 import bcrypt from 'bcryptjs';
+import Cloudinary from '../utils/cloudinary.js';
 
 const Register = async (req, res) => {
+
   const { error } = UserValidation({
     name: req.body.name,
     username: req.body.username,
@@ -10,18 +12,18 @@ const Register = async (req, res) => {
     lastSeen: req.body.lastSeen,
     details: req.body.details,
     policeStation: req.body.policeStation,
-
     names: req.body.names,
     othername: req.body.othername,
-    role: req.body.role
+  
   });
   if (error) return res.status(400).json(error.details[0].message);
   try {
     const { name, username, age,  lastSeen, details, policeStation, names, othername} = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ name });
     if (user) return res.status(400).json({ message: 'User already exists' });
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(password, salt);
+
+    const result = await Cloudinary(req);
+  
     const newUser = new User({
       name,
       username,
@@ -31,18 +33,20 @@ const Register = async (req, res) => {
       policeStation,
       names,
       othername,
+      image:result
     });
     const savedUser = await newUser.save();
     res
       .status(201)
       .json({ message: 'user saved successfull', user: savedUser });
+
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({error});
   }
 };
 const getAllUser = async (req, res) => {
   try {
-    const user = await User.find().populate('role').exec();
+    const user = await User.find().populate('name').exec();
     res.status(200).json({ user });
   } catch (error) {
     res.status(400).json({ error: error.message });

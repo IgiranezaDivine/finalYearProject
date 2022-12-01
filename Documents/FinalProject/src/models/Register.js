@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
 
 const schema = mongoose.Schema;
-const User = new schema({
+const Register = new schema({
   name: String,
   username: String,
   age: Number,
   lastSeen: 
   {
-    type:Date,
+    type:String,
   },
   details: String,
   policeStation: String,
   names: String,
   othername: String,
+  image:String,
 
   create_at: {
     type: Date,
@@ -20,4 +21,4 @@ const User = new schema({
   },
  
 });
-export default mongoose.model('user', User);
+export default mongoose.model('register', Register);
